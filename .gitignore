@@ -1,6 +1,9 @@
 .vscode
 
+build
+
 # executables
 *.exe
 *.out
 *.app
+
