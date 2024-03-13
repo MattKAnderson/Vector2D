@@ -66,10 +66,10 @@ public:
 	}
 	
 	Vector2D operator- (const Vector2D& v) const {
-		return Vector2D(this.x - v.x, this.y - v.y);
+		return Vector2D(x - v.x, y - v.y);
 	}; 
 
-	Vector2D operator-= (const Vector2D& v) const {
+	Vector2D operator-= (const Vector2D& v) {
 		x -= v.x;
 		y -= v.y;
 		return *this;
