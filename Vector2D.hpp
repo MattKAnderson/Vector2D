@@ -2,10 +2,24 @@
 #include <cmath>
 #include <ostream>
 
+
 template <typename T>
 class Vector2D
 {
+	// assert this is a useable numeric type
+	static_assert(
+		std::is_same<char, T>::value ||
+		std::is_same<short, T>::value ||
+		std::is_same<int, T>::value ||
+		std::is_same<long, T>::value ||
+		std::is_same<long long, T>::value ||
+		std::is_same<float, T>::value ||
+		std::is_same<double, T>::value ||
+		std::is_same<long double, T>::value	
+	);
+
 public:
+	
 	//public member data
 	T x, y;
 	
@@ -123,7 +137,15 @@ std::ostream& operator << (std::ostream& outs, const Vector2D<T>& v) {
 	return outs << "(" << v.x << ", " << v.y << ")";
 }
 
+std::ostream& operator << (std::ostream& outs, const Vector2D<char>& v) {
+	return outs << "(" << static_cast<int>(v.x) << ", " << static_cast<int>(v.y) << ")";
+}
+
 template <typename T>
 std::string to_string(const Vector2D<T>& v) {
 	return "(" + v.x + ", " + v.y + ")";
+}
+
+std::string to_string(const Vector2D<char>& v) {
+	return "(" + std::to_string(static_cast<int>(v.x)) + ", " + std::to_string(static_cast<int>(v.y)) + ")";
 }
