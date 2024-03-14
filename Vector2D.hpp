@@ -61,8 +61,9 @@ public:
 	void rotate(T angle) {
 		double costheta = cos(angle);
 		double sintheta = sin(angle);
+		double tmpx = x;
 		x = x * costheta - y * sintheta;
-		y = x * sintheta + y * costheta;
+		y = tmpx * sintheta + y * costheta;
 	};	
 
 	Vector2D rotated(T angle) const {
