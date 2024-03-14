@@ -118,7 +118,7 @@ public:
 	};  
 
 	template<typename U>
-	explicit operator Vector2D<U>() {
+	operator Vector2D<U>() {
 		return Vector2D<U>(static_cast<U>(this->x), static_cast<U>(this->y));
 	}
 
@@ -143,7 +143,7 @@ std::ostream& operator << (std::ostream& outs, const Vector2D<char>& v) {
 
 template <typename T>
 std::string to_string(const Vector2D<T>& v) {
-	return "(" + v.x + ", " + v.y + ")";
+	return "(" + std::to_string(v.x) + ", " + std::to_string(v.y) + ")";
 }
 
 std::string to_string(const Vector2D<char>& v) {
