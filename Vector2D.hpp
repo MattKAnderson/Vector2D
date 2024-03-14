@@ -42,7 +42,11 @@ public:
 	};
 
 	T length_along(const Vector2D& v) const {
-		return (*this) * v / v.Vlen();
+		double vlen = v.Vlen();
+		if (vlen == 0.0) {
+			return 0.0;
+		}
+		return (*this) * v / vlen;
 	};
 
 	void normalize() {
