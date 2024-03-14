@@ -397,9 +397,133 @@ namespace {
             )
         );
 
-        // need to test len, lensq, length_along, rotate, rotated, normalize still
+        // need to test length_along, rotate, rotated still
+        class ParametrizedVectorLength : public testing::TestWithParam<std::tuple<double, double, double>> {};
+        TEST_P(ParametrizedVectorLength, Vlen) {
+            auto [x1, y1, expected] = GetParam();
+            double result = Vector2D<double>(x1, y1).Vlen();
+            EXPECT_NEAR(expected, result, 1e-8);
+        }
+        INSTANTIATE_TEST_SUITE_P(
+            VectorLength, 
+            ParametrizedVectorLength,
+            testing::Values(
+                std::make_tuple(19.712, 0.9712, 19.73591076),
+                std::make_tuple(0.0, 5.812, 5.812),
+                std::make_tuple(-87.713, 612.341, 618.591198328),
+                std::make_tuple(71.431, -48.098, 86.11507049),
+                std::make_tuple(-81.241, -79.061, 113.361112386),
+                std::make_tuple(7.1324, 0.0, 7.1324),
+                std::make_tuple(0.0, 0.0, 0.0)
+            )
+        );
 
+        class ParametrizedVectorLengthSq : public testing::TestWithParam<std::tuple<double, double, double>> {};
+        TEST_P(ParametrizedVectorLengthSq, VlenSq) {
+            auto [x1, y1, expected] = GetParam();
+            double result = Vector2D<double>(x1, y1).VlenSq();
+            EXPECT_NEAR(expected, result, 1e-8);
+        }
+        INSTANTIATE_TEST_SUITE_P(
+            VectorLengthSq, 
+            ParametrizedVectorLengthSq,
+            testing::Values(
+                std::make_tuple(101.6781, 29.712, 11221.23896361),
+                std::make_tuple(0.7123, 0.0, 0.50737129),
+                std::make_tuple(-438.428, 163.78, 219042.999584),
+                std::make_tuple(56.9123, -22.849, 3761.08669229),
+                std::make_tuple(-0.9631344, -0.48234, 1.160279748),
+                std::make_tuple(635.1519123, 0.0, 403417.951698346),
+                std::make_tuple(0.0, 0.0, 0.0)
+            )
+        );
 
+        class ParametrizedVectorNormalize : public testing::TestWithParam<std::tuple<double, double, double, double>> {};
+        TEST_P(ParametrizedVectorNormalize, normalizeX) {
+            auto [x, y, ex, ey] = GetParam();
+            Vector2D<double> result(x, y);
+            result.normalize();
+            EXPECT_NEAR(ex, result.x, 1e-8);
+        }
+        TEST_P(ParametrizedVectorNormalize, normalizeY) {
+            auto [x, y, ex, ey] = GetParam();
+            Vector2D<double> result(x, y);
+            result.normalize();
+            EXPECT_NEAR(ey, result.y, 1e-8);
+        }       
+
+        INSTANTIATE_TEST_SUITE_P(
+            VectorNormalize,
+            ParametrizedVectorNormalize,
+            testing::Values(
+                std::make_tuple(0.0, 0.0, 0.0, 0.0),
+                std::make_tuple(7816.19823, 0.0, 1.0, 0.0),
+                std::make_tuple(0.0, 81.12541, 0.0, 1.0),
+                std::make_tuple(-8124.1241, 0.0, -1.0, 0.0),
+                std::make_tuple(0.0, -6.123, 0.0, -1.0),
+                std::make_tuple(0.2181, 0.0912, 0.922588089, 0.385786491),
+                std::make_tuple(6.8121, -3.0973, 0.910321622, -0.41390161),
+                std::make_tuple(-809.7123, 1001.6931, -0.628643635, 0.777693499)
+            )
+        );
+
+        class ParametrizedVectorLengthAlong : public fiveDoubleParametrization {};
+        TEST_P(ParametrizedVectorLengthAlong, lengthAlong) {
+            auto [x1, y1, x2, y2, expected] = GetParam();
+            double result = Vector2D<double>(x1, y1).length_along(Vector2D<double>(x2, y2));
+            EXPECT_NEAR(expected, result, 1e-8);
+        }
+        INSTANTIATE_TEST_SUITE_P(
+            VectorLengthAlong,
+            ParametrizedVectorLengthAlong,
+            testing::Values(
+                std::make_tuple(8.1231, 9.17824, 0.0, 0.0, 0.0),
+                std::make_tuple(0.0, 0.0, 901.241, 213.1241, 0.0),
+                std::make_tuple(-0.6512, 0.556, 0.6512, -0.556, -0.856269490289126),
+                std::make_tuple(0.8991, 0.2351, 0.66123, 0.45612, 0.873592375950453),
+                std::make_tuple(8991.1254, 1032.88, 0.56, 0.49, 7446.66767460228983),
+                std::make_tuple(8991.1254, 1032.88, -0.87, 0.23, -8428.503618019785514),
+                std::make_tuple(-707.581, -404.404, 0.33, -0.65, 40.277095531553007)
+            )
+        );
+
+        class ParametrizedVectorRotation : public fiveDoubleParametrization {};
+        TEST_P(ParametrizedVectorRotation, rotateX) {
+            auto [x, y, angle, ex, ey] = GetParam();
+            Vector2D<double> result(x, y);
+            result.rotate(angle);
+            EXPECT_NEAR(ex, result.x, 1e-8);
+        }
+        TEST_P(ParametrizedVectorRotation, rotateY) {
+            auto [x, y, angle, ex, ey] = GetParam();
+            Vector2D<double> result(x, y);
+            result.rotate(angle);
+            EXPECT_NEAR(ey, result.y, 1e-8);
+        }
+        TEST_P(ParametrizedVectorRotation, rotatedX) {
+            auto [x, y, angle, ex, ey] = GetParam();
+            Vector2D<double> result = Vector2D<double>(x, y).rotated(angle);
+            EXPECT_NEAR(ex, result.x, 1e-8);
+        }
+        TEST_P(ParametrizedVectorRotation, rotatedY) {
+            auto [x, y, angle, ex, ey] = GetParam();
+            Vector2D<double> result = Vector2D<double>(x, y).rotated(angle);
+            EXPECT_NEAR(ey, result.y, 1e-8);
+        }
+        INSTANTIATE_TEST_SUITE_P(
+            VectorRotation,
+            ParametrizedVectorRotation,
+            testing::Values(
+                std::make_tuple(0.0, 1.0, 2.0876, -0.869402935236088, -0.494103770682713),
+                std::make_tuple(1.0, 0.0, -1.0681, 0.481790042359897, -0.876286685441955),
+                std::make_tuple(0.67123, 0.2232, 0.0, 0.67123, 0.2232),
+                std::make_tuple(0.0, 0.0, 1.567, 0.0, 0.0),
+                std::make_tuple(-0.8712, 0.5671, 3.9812, 1.003886750683231, 0.26982075865779),
+                std::make_tuple(-1.0681, -0.55681, -1.07, -1.001254701810563, 0.669599886650409),
+                std::make_tuple(-1.0890, 0.6777, -1.8432, 0.945703612550996, 0.866511954451868),
+                std::make_tuple(0.69123, -1.8762, 0.881, 1.887139991786614, -0.660778332195917)
+            )
+        );
     }
     namespace ConstructionConversionUtilityTests {
         TEST(Construction, intX) {
