@@ -142,7 +142,8 @@ std::ostream& operator << (std::ostream& outs, const Vector2D<T>& v) {
 	return outs << "(" << v.x << ", " << v.y << ")";
 }
 
-std::ostream& operator << (std::ostream& outs, const Vector2D<char>& v) {
+template <>
+inline std::ostream& operator << (std::ostream& outs, const Vector2D<char>& v) {
 	return outs << "(" << static_cast<int>(v.x) << ", " << static_cast<int>(v.y) << ")";
 }
 
@@ -151,6 +152,7 @@ std::string to_string(const Vector2D<T>& v) {
 	return "(" + std::to_string(v.x) + ", " + std::to_string(v.y) + ")";
 }
 
-std::string to_string(const Vector2D<char>& v) {
+template <>
+inline std::string to_string(const Vector2D<char>& v) {
 	return "(" + std::to_string(static_cast<int>(v.x)) + ", " + std::to_string(static_cast<int>(v.y)) + ")";
 }
