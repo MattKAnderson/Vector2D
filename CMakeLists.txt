@@ -1,22 +1,56 @@
-cmake_minimum_required(VERSION 3.27.0)
-project(Vector2D VERSION 0.1.0 LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.11.0)
+project("Vector2D" VERSION 0.1.0 
+                   DESCRIPTION "A header only c++ library for vectors of length 2"
+                   HOMEPAGE_URL "https://github.com/MattKAnderson/Vector2D"
+                   LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+string(COMPARE EQUAL "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}" is_top_level)
 
-include(FetchContent)
-FetchContent_Declare(
-  googletest
-  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+include(GNUInstallDirs)
+
+option(VECTOR2D_BUILD_TESTS "Build Vector2D tests" OFF)
+option(VECTOR2D_INSTALL "Generate target for installing Vector2D" is_top_level)
+
+add_library(Vector2D INTERFACE)
+add_library(Vector2D::Vector2D ALIAS Vector2D)
+
+target_include_directories(
+  Vector2D
+  INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
-# For Windows: Prevent overriding the parent project's compiler/linker settings
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
+target_compile_features(Vector2D INTERFACE cxx_std_11)
 
-enable_testing()
+install(
+  TARGETS Vector2D
+  EXPORT ${PROJECT_NAME}_Targets
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
 
-add_executable(Vector2D_tests Vector2D_tests.cpp)
-target_link_libraries(Vector2D_tests GTest::gtest_main)
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+  "Vector2D-config-version.cmake"
+  VERSION ${PROJECT_VERSION}
+  COMPATIBILITY SameMajorVersion
+)
 
-include(GoogleTest)
-gtest_discover_tests(Vector2D_tests)
+install(
+  EXPORT ${PROJECT_NAME}_Targets
+  FILE ${PROJECT_NAME}Targets.cmake
+  NAMESPACE ${PROJECT_NAME}::
+  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/cmake
+)
+
+install(
+  FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}-config.cmake"
+        "${PROJECT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake"
+  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/cmake
+)
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/include DESTINATION include)
+
+if(VECTOR2D_BUILD_TESTS)
+  enable_testing()
+  add_subdirectory(tests)
+endif()
