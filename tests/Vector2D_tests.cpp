@@ -73,6 +73,31 @@ namespace {
             )
         );
 
+        class ParametrizedVectorIntUnaryMinus : public fourIntParametrization {};
+        TEST_P(ParametrizedVectorIntUnaryMinus, unaryMinusX) {
+            auto [x, y, ex, ey] = GetParam();
+            Vector2D<int> result = -Vector2D<int>(x, y);
+            EXPECT_EQ(ex, result.x);
+        }
+        TEST_P(ParametrizedVectorIntUnaryMinus, unaryMinusY) {
+            auto [x, y, ex, ey] = GetParam();
+            Vector2D<int> result = -Vector2D<int>(x, y);
+            EXPECT_EQ(ey, result.y);
+        }
+        INSTANTIATE_TEST_SUITE_P(
+            VectorIntUnaryMinus,
+            ParametrizedVectorIntUnaryMinus,
+            testing::Values(
+                std::make_tuple(0, 0, 0, 0),
+                std::make_tuple(0, 17, 0, -17),
+                std::make_tuple(9, 0, -9, 0),
+                std::make_tuple(221, 90, -221, -90),
+                std::make_tuple(-18, 3, 18, -3),
+                std::make_tuple(205, -177, -205, 177),
+                std::make_tuple(-909, -82, 909, 82)
+            )
+        );
+
         class ParametrizedVectorIntDotProduct : public fiveIntParametrization {};
         TEST_P(ParametrizedVectorIntDotProduct, dotProduct) {
             auto [x1, y1, x2, y2, expected] = GetParam();
@@ -201,7 +226,7 @@ namespace {
     namespace FloatingPointTests {
         class sixDoubleParametrization : public testing::TestWithParam<std::tuple<double, double, double, double, double, double>> {};
         class fiveDoubleParametrization : public testing::TestWithParam<std::tuple<double, double, double, double, double>> {};
-
+        class fourDoubleParametrization : public testing::TestWithParam<std::tuple<double, double, double, double>> {};
         class ParametrizedVectorAddition : public sixDoubleParametrization {};
         TEST_P(ParametrizedVectorAddition, additionX) {
             auto [x1, y1, x2, y2, ex, ey] = GetParam();
@@ -438,7 +463,7 @@ namespace {
             )
         );
 
-        class ParametrizedVectorNormalize : public testing::TestWithParam<std::tuple<double, double, double, double>> {};
+        class ParametrizedVectorNormalize : public fourDoubleParametrization {};
         TEST_P(ParametrizedVectorNormalize, normalizeX) {
             auto [x, y, ex, ey] = GetParam();
             Vector2D<double> result(x, y);
@@ -522,6 +547,31 @@ namespace {
                 std::make_tuple(-1.0681, -0.55681, -1.07, -1.001254701810563, 0.669599886650409),
                 std::make_tuple(-1.0890, 0.6777, -1.8432, 0.945703612550996, 0.866511954451868),
                 std::make_tuple(0.69123, -1.8762, 0.881, 1.887139991786614, -0.660778332195917)
+            )
+        );
+
+        class ParametrizedVectorUnaryMinus : public fourDoubleParametrization {};
+        TEST_P(ParametrizedVectorUnaryMinus, unaryMinusX) {
+            auto [x, y, ex, ey] = GetParam();
+            Vector2D<double> result = -Vector2D<double>(x, y);
+            EXPECT_DOUBLE_EQ(ex, result.x);
+        }
+        TEST_P(ParametrizedVectorUnaryMinus, unaryMinusY) {
+            auto [x, y, ex, ey] = GetParam();
+            Vector2D<double> result = -Vector2D<double>(x, y);
+            EXPECT_DOUBLE_EQ(ey, result.y);
+        }
+        INSTANTIATE_TEST_SUITE_P(
+            VectorUnaryMinus,
+            ParametrizedVectorUnaryMinus,
+            testing::Values(
+                std::make_tuple(0.0, 0.0, 0.0, 0.0),
+                std::make_tuple(712.841, 0.0, -712.841, 0.0),
+                std::make_tuple(0.0, 971.93, 0.0, -971.93),
+                std::make_tuple(0.6171, 81.391, -0.6171, -81.391),
+                std::make_tuple(-0.9123, 0.4498, 0.9123, -0.4498),
+                std::make_tuple(8.4881, -4.491, -8.4881, 4.491),
+                std::make_tuple(-7.123, -4.919, 7.123, 4.919)
             )
         );
     }
